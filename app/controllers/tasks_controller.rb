@@ -22,11 +22,11 @@ class TasksController < ApplicationController
     end
   end
 
-  def new
+  def new #show
     @task = Task.new
   end
 
-  def create
+  def create #do
     task = Task.new(
       action: params[:task][:action],
       description: params[:task][:description],
@@ -41,7 +41,15 @@ class TasksController < ApplicationController
     end
   end
 
-  def edit
+  def edit #show a form
+    task_id = params[:id].to_i
+    @task = Task.find_by(id: [task_id])
+    if @task.nil?
+      head :not_found
+    end
+  end
 
+
+  def update #create a new form
   end
 end
