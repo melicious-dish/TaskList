@@ -8,7 +8,7 @@ Practice all aspects of Rails development.
 - Implement RESTful routes using Rails standards
 - Complete all CRUD actions in a Rails application
 
-**Project Due Monday Sept 24th**
+**Project Due EOD Sun, Sept 23rd**
 
 ## Baseline
 In this baseline, you'll create a new Rails application and get started with two of the major components: route, controller and view.
