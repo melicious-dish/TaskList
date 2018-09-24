@@ -15,8 +15,7 @@ class TasksController < ApplicationController
   # key in params NEED TO MATCH the key in routes
 
   def show
-    task_id = params[:id].to_i
-    @task = Task.find_by(id: [task_id])
+    @task = Task.find_by(id: params[:id])
     if @task.nil?
       head :not_found  #or 404.. http head: head is general to all controllers. don't send body, just send error code.
     end
@@ -27,12 +26,10 @@ class TasksController < ApplicationController
   end
 
   def create #do
-    task = Task.new(
-      action: params[:task][:action],
-      description: params[:task][:description],
-      completion_date: params[:task][:completion_date]
-    ) #instantiate a new book
-    is_successful_save = task.save
+    filtered_task_params = task_params()
+    @task = Task.new(filtered_task_params) #instantiate a new book
+
+    is_successful_save = @task.save
 
     if is_successful_save # save returns true if the database insert succeeds
       redirect_to tasks_path # go to the index so we can see the book in the list
@@ -41,15 +38,45 @@ class TasksController < ApplicationController
     end
   end
 
+  def mark_complete
+    task = Task.find_by(id: params[:id])
+    task.update(completion_date: 'Complete')
+    redirect_to tasks_path
+  end
+
   def edit #show a form
-    task_id = params[:id].to_i
-    @task = Task.find_by(id: [task_id])
-    if @task.nil?
-      head :not_found
-    end
+    @task = Task.find_by(id: params[:id])
   end
 
 
-  def update #create a new form
+  def update #create a new form #do
+    task = Task.find(params[:id])
+    task.update(task_params)
+    # update is a rails method
+    redirect_to task_path
   end
+
+
+
+  def destroy
+    task = Task.find_by(id: params[:id])
+
+    task.destroy
+    redirect_to tasks_path # with s is a collection - index route
+             # task_path is one path and needs an :id paramater
+
+             # add a condiiional here
+  end
+
+  private
+
+  def task_params
+    # only take in these params. Lesson attacks on site
+    return params.require(:task).permit(
+      :action,
+      :description,
+      :completion_date
+    )
+  end
+
 end
